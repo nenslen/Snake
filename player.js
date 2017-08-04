@@ -1,11 +1,10 @@
-var Directions = {UP: 0, DOWN: 1, LEFT: 2, RIGHT: 3};
-
-
 function Player() {
 
 	this.alive = true;
 	this.x = 10;
 	this.y = 10;
+	this.prevX = 0;
+	this.prevY = 0;
 	this.prevDirection = Directions.UP;
 	this.nextDirection = Directions.UP;
 	this.segments = [];
@@ -42,7 +41,11 @@ function Player() {
 
 	// Moves the player and its segments
 	this.move = function() {
-		var headPos = new Point(this.x, this.y);
+		
+		// Save prev pos and movement
+		this.prevX = this.x;
+		this.prevY = this.y;
+		this.prevDirection = this.nextDirection;
 
 
 		// Move head
@@ -60,15 +63,16 @@ function Player() {
 				this.x++;
 				break;
 		}
-		this.prevDirection = this.nextDirection;
-
+		
 
 		// Move tail
 		var len = this.segments.length;
 		if(len > 0) {
-			this.segments[len - 1].x = headPos.x;
-			this.segments[len - 1].y = headPos.y;
-			this.segments.push(this.segments.pop());
+			var tempTail = this.segments[len - 1];
+			this.segments.pop();
+			this.segments.unshift(tempTail);
+			this.segments[0].x = this.prevX;
+			this.segments[0].y = this.prevY;
 		}
 	}
 
@@ -79,6 +83,7 @@ function Player() {
 		var newX;
 		var newY;
 
+		// Finds where segment should be placed
 		if(len > 0) {
 			newX = this.segments[len - 1].x;
 			newY = this.segments[len - 1].y;
@@ -88,5 +93,43 @@ function Player() {
 		}
 
 		this.segments.push(new Point(newX, newY));
+	};
+
+
+	// Removes the last segment from the player
+	this.removeSegment = function() {
+		if(this.segments.length > 0) {
+			segments.pop();
+		}
+	};
+
+
+	// Removes all segments from the player
+	this.removeAllSegments = function() {
+		if(this.segments.length > 0) {
+			segments = [];
+		}
+	};
+
+
+	// Checks if the player or its segments occupies a given position
+	this.existsHere = function(posX, posY) {
+		if(this.segments.length > 0) {
+
+			// Check head
+			if(this.x == posX && this.y == posY) {
+				return true;
+			}
+
+
+			// Check segments
+			for(var i = 0; i < this.segments.length; i++) {
+				if(this.segments[i].x == posX && this.segments[i].y == posY) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	};
 };
