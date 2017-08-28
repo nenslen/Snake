@@ -122,12 +122,6 @@ function Snake() {
 		}
 
 
-		// Remove all used tiles
-		if(this.player.segments.length > 0) {
-			console.log(validTiles.indexOf(segments[0]));
-		}
-
-
 		// Select a random tile
 		if(validTiles.length > 0) {
 			var rnd = Math.floor((Math.random() * validTiles.length));
