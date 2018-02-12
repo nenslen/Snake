@@ -1,5 +1,6 @@
-var SPRITE_SIZE = 32;
-var GRID_SIZE = 20;
+var PlayerType = Object.freeze({HUMAN: 0, BOT_NAIVE: 1});
+var SPRITE_SIZE = 16;
+var GRID_SIZE = 30;
 
 var game = new Phaser.Game(SPRITE_SIZE * GRID_SIZE, SPRITE_SIZE * GRID_SIZE, Phaser.CANVAS, 'sim', { preload: preload, create: create, update: update });
 
@@ -18,8 +19,9 @@ var particle;
 var gemBounce;
 
 var updateTime = 0;
-var gameSpeed = 50; // Time between updates (lower = faster)
+var gameSpeed = 5; // Time between updates (lower = faster)
 var gameStarted = false;
+var playerType = PlayerType.BOT_NAIVE;
 var comboTime = 100;
 var comboTimer = 0;
 var comboFont;
@@ -74,10 +76,13 @@ function update() {
     }
 
 
-    updatePlayerDirection();
+    // Human or bot will set the next direction
+    
+    
 
+    // Update object locations
     if(game.time.now > updateTime && gameStarted === true) {
-        
+        updatePlayerDirection(playerType);
         snake.update();
         
 
@@ -145,39 +150,47 @@ function update() {
 
 
 // Updates which direction player wants to move
-function updatePlayerDirection() {
+function updatePlayerDirection(playerType) {
 
     if(gameStarted === false) {
         return;
     }
 
 
-    // Check WASD and Arrow keys
-    if (leftKey.isDown || aKey.isDown) {
-        snake.player.setDirection(Directions.LEFT);
-        gameStarted = true;
+    // Get next direction from human or bot
+    var nextDirection;
+    switch(playerType) {
+        case PlayerType.HUMAN:
+            if (leftKey.isDown || aKey.isDown) {
+                snake.player.setDirection(Directions.LEFT);
+            }
+            if (rightKey.isDown || dKey.isDown) {
+                snake.player.setDirection(Directions.RIGHT);
+            }
+            if (upKey.isDown || wKey.isDown) {
+                snake.player.setDirection(Directions.UP);
+            }
+            if (downKey.isDown || sKey.isDown) {
+                snake.player.setDirection(Directions.DOWN);
+            }
+            break;
+        case PlayerType.BOT_NAIVE:
+            snake.player.setDirection(Bot.getMove(snake.getState()));
+            break; 
     }
-    if (rightKey.isDown || dKey.isDown) {
-        snake.player.setDirection(Directions.RIGHT);
-        gameStarted = true;
-    }
-    if (upKey.isDown || wKey.isDown) {
-        snake.player.setDirection(Directions.UP);
-        gameStarted = true;
-    }
-    if (downKey.isDown || sKey.isDown) {
-        snake.player.setDirection(Directions.DOWN);
-        gameStarted = true;
-    }
+
+    gameStarted = true;
 }
 
 
 // Resets the game and graphics
 function reset() {
 
+    // Set player type
+    bot = Bot.NONE;
+
     // Clear all objects first
     game.world.removeAll();
-
 
     // Layers
     backLayer = game.add.group();

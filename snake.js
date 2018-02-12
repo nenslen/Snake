@@ -1,14 +1,3 @@
-// Enums
-var TileValues = Object.freeze({EMPTY: 0, WALL: 1, PLAYER: 2, GEM: 3});
-var Directions = Object.freeze({UP: 0, DOWN: 1, LEFT: 2, RIGHT: 3});
-var GameModes = Object.freeze({CLASSIC: 0, SURVIVAL: 1, MINEFIELD: 2});
-
-function Point(x, y) {
-	this.x = x;
-	this.y = y;
-}
-
-
 // The snake game model
 function Snake() {
 
@@ -25,7 +14,7 @@ function Snake() {
 	this.gem = new Point();
 	this.currentXP = 0;
 	this.collectedGem = false;
-	this.gameMode = 0;
+	this.gameMode = GameModes.CLASSIC;
 	this.wrap = false;
 
 
@@ -80,7 +69,7 @@ function Snake() {
 		var collision = TileValues.EMPTY;
 
 
-		// Wall
+		// Walls
 		if(this.player.x < 0 ||
 		   this.player.y < 0 ||
 		   this.player.x >= GRID_SIZE ||
@@ -146,5 +135,17 @@ function Snake() {
 	    } else {
 	    	prevCombo = self.combo;
 	    }
+	}
+
+
+	// Returns the current state of the game
+	this.getState = function() {
+		var state = {
+			player: new Point(this.player.x, this.player.y),
+			segments: this.player.segments,
+			gem: this.gem,
+			tiles: tiles
+		};
+		return state;
 	}
 };
