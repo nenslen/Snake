@@ -1,8 +1,8 @@
 // The snake game model
-function Snake() {
+function Snake(gridSize) {
 
 	// Variables
-	var GRID_SIZE = 20;
+	var GRID_SIZE = gridSize;
 
 	var tiles = [];
 	var prevCombo = 0;

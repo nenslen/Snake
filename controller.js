@@ -1,6 +1,6 @@
 var PlayerType = Object.freeze({HUMAN: 0, BOT_NAIVE: 1});
-var SPRITE_SIZE = 16;
-var GRID_SIZE = 30;
+var SPRITE_SIZE = 32;
+var GRID_SIZE = 20;
 
 var game = new Phaser.Game(SPRITE_SIZE * GRID_SIZE, SPRITE_SIZE * GRID_SIZE, Phaser.CANVAS, 'sim', { preload: preload, create: create, update: update });
 
@@ -19,13 +19,14 @@ var particle;
 var gemBounce;
 
 var updateTime = 0;
-var gameSpeed = 5; // Time between updates (lower = faster)
+var gameSpeed = 25; // Time between updates (lower = faster)
 var gameStarted = false;
-var playerType = PlayerType.BOT_NAIVE;
+var playerType = PlayerType.BOT_DFS;
 var comboTime = 100;
 var comboTimer = 0;
 var comboFont;
 var comboText;
+var comboEffects = false;
 
 var spaceKey;
 var upKey;
@@ -95,7 +96,7 @@ function update() {
             backLayer.add(newSegment);
             snake.collectedGem = false;
 
-            if(snake.combo > 1) {
+            if(snake.combo > 1 && comboEffects) {
                 game.camera.shake(0.005, 200);
                 emitter.x = snake.player.x * SPRITE_SIZE;
                 emitter.y = snake.player.y * SPRITE_SIZE;
@@ -174,9 +175,12 @@ function updatePlayerDirection(playerType) {
                 snake.player.setDirection(Directions.DOWN);
             }
             break;
-        case PlayerType.BOT_NAIVE:
-            snake.player.setDirection(Bot.getMove(snake.getState()));
-            break; 
+        case PlayerType.BOT_BFS:
+            snake.player.setDirection(Bot.getBFSMove(snake.getState()));
+            break;
+        case PlayerType.BOT_DFS:
+            snake.player.setDirection(Bot.getDFSMove(snake.getState()));
+            break;  
     }
 
     gameStarted = true;
@@ -205,7 +209,7 @@ function reset() {
     emitter.maxParticleScale = scale;
 
     // Game and player
-    snake = new Snake();
+    snake = new Snake(GRID_SIZE);
     snake.reset();
     segments = [];
 
