@@ -1,5 +1,6 @@
-function Player() {
+function Snake() {
 
+	// Attributes
 	this.alive = true;
 	this.x = 10;
 	this.y = 10;
@@ -10,18 +11,25 @@ function Player() {
 	this.segments = [];
 
 
-	// Resets values
+	/**
+	* Resets the snake to its default values
+	*/
 	this.reset = function() {
 		this.alive = true;
-		this.x = 0;
-		this.y = 0;
+		this.x = 10;
+		this.y = 10;
+		this.prevX = 0;
+		this.prevY = 0;
 		this.prevDirection = Directions.UP;
 		this.nextDirection = Directions.UP;
 		this.segments = [];
 	};
 
 
-	// Validates and sets the next direction
+	/**
+	* Validates and sets the next direction
+	* @param direction: A Direction enum specifying the direction the snake should move next
+	*/
 	this.setDirection = function(direction) {
 		var newDirection = direction;
 
@@ -39,7 +47,7 @@ function Player() {
 	};
 
 
-	// Moves the player and its segments
+	// Moves the player and its segments in the set direction
 	this.move = function() {
 		
 		// Save prev pos and movement
@@ -63,6 +71,32 @@ function Player() {
 				this.x++;
 				break;
 		}
+		
+
+		// Move tail
+		var len = this.segments.length;
+		if(len > 0) {
+			var tempTail = this.segments[len - 1];
+			this.segments.pop();
+			this.segments.unshift(tempTail);
+			this.segments[0].x = this.prevX;
+			this.segments[0].y = this.prevY;
+		}
+	}
+
+
+	/**
+	* Moves the player and its segments to a given position
+	* @param x: The x position to move to
+	* @param y: The y position to move to
+	*/
+	this.moveTo = function(x, y) {
+		
+		// Save prev pos and movement
+		this.prevX = this.x;
+		this.prevY = this.y;
+		this.x = x;
+		this.y = y;
 		
 
 		// Move tail
@@ -112,19 +146,23 @@ function Player() {
 	};
 
 
-	// Checks if the player or its segments occupies a given position
-	this.existsHere = function(posX, posY) {
+	/**
+	* Checks if the player or any of its segments occupies a given position
+	* @param x: The x coordinate of the position to check
+	* @param y: The y coordinate of the position to check
+	*/
+	this.existsHere = function(x, y) {
 		if(this.segments.length > 0) {
 
 			// Check head
-			if(this.x == posX && this.y == posY) {
+			if(this.x == x && this.y == y) {
 				return true;
 			}
 
 
 			// Check segments
 			for(var i = 0; i < this.segments.length; i++) {
-				if(this.segments[i].x == posX && this.segments[i].y == posY) {
+				if(this.segments[i].x == x && this.segments[i].y == y) {
 					return true;
 				}
 			}
