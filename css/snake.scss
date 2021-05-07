@@ -1,0 +1,37 @@
+$buttonColor: #359;
+$cardColor: lighten(gainsboro, 10%);
+$cardTextColor: #123;
+
+p {
+	text-align: left;
+}
+
+canvas {
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid darken(#e3e3e3, 10%);
+	transition: all 0.1s;
+}
+
+canvas:hover {
+	cursor: pointer;
+}
+
+.section {
+    max-width: 1000px;
+}
+
+#start-button {
+	margin-top: 50px;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+// input[type=range] {
+// 	max-width: none;
+// }
+
+// select {
+// 	max-width: none;
+// }

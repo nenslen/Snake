@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('head', {title: 'Snake - Nicolas Enslen'}); %>
+
+	<link rel="stylesheet" type="text/css" href="/snake/css/snake.css">
+
+	<script src="/snake/js/phaser.js"></script>
+	<script src="/snake/js/variables.js"></script>
+	<script src="/snake/js/snake.js"></script>
+	<script src="/snake/js/snake-game.js"></script>
+	<script src="/snake/js/AI - Copy.js"></script>
+	<script src="/snake/js/controller.js"></script>
+</head>
+<body>
+	<%- include('header'); %>
+
+	<div class="wrapper wrapper-no-margin-top">
+		<div class='section-wrapper'>
+			<div class="section">
+				<h1 class="section-header top-header">Snake</h1>
+				<div class="section-content">
+					<div id="sim"></div>
+
+					<button class="button button-green" id="start-button">New Game</button>
+					
+					<div id="settings-menu">
+						
+							<div class="card settings-group">
+								<div class="settings-group-inner">
+									<span class="settings-item-header">Game Options</span>
+
+									<span class="settings-item">
+										<span class="settings-item-header-small">Player Type</span>
+										<select class="button-blue" id="playerType">
+											<option value="0" selected="selected">AI</option>
+											<option value="1">Human</option>
+										</select>
+									</span>
+
+									<span class="settings-item">
+										<span class="settings-item-header-small">Game Speed</span>
+										<div class="gameSpeed_slider">
+											<input class="gameSpeed_range" type="range" value="200" min="0" max="250">
+										</div>
+									</span> 
+
+									<span class="settings-item">
+										<span class="settings-item-header-small">Rows</span>
+										<input type="number" id="numRows" value="6">
+									</span>
+
+									<span class="settings-item">
+										<span class="settings-item-header-small">Columns</span>
+										<input type="number" id="numCols" value="7">
+									</span>
+<!-- var comboCameraShake = false;
+var comboParticleEffects = true;
+var comboTextEffect = false; -->
+									<span class="settings-item">
+										<span class="settings-item-header-small">Effects</span>
+										
+										<input type="checkbox" id="comboCameraShake" checked="checked">
+										<label for="comboCameraShake">Camera Shake</label>
+
+										<input type="checkbox" id="comboParticleEffects" checked="checked">
+										<label for="comboParticleEffects">Particles</label>
+
+										<input type="checkbox" id="comboTextEffect" checked="checked">
+										<label for="comboTextEffect">Show combo</label>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+
+			        <h1 class="section-header top-header">About</h1>
+			        <p id="description">Description for about</p>
+			        
+			        <h1 class="section-header top-header">Details</h1>
+			        <h2 class="section-header section-header-small">How it works</h2>
+			        <p>Description for how it works</p>
+			        
+			        <p>For source code, visit the <a href="https://github.com/nenslen/snake">github page for this project</a>.</p>
+			        
+			        <canvas id="hiddenCanvas" width="280" height="280" style="display: none"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+
+</body>
+</html>
