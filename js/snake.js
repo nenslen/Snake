@@ -1,9 +1,9 @@
-function Snake() {
+function Snake(x=10, y=10) {
 
 	// Attributes
 	this.alive = true;
-	this.x = 10;
-	this.y = 10;
+	this.x = x;
+	this.y = y;
 	this.prevX = 0;
 	this.prevY = 0;
 	this.prevDirection = Directions.UP;

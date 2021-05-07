@@ -15,9 +15,7 @@ function SnakeGame(gridWidth, gridHeight, gameMode = GameModes.CLASSIC, wrap = f
 
 	this.comboTime = 1500;
 	this.combo = 0;
-	this.snake = new Snake();
-	this.snake.x = Math.floor(gridWidth / 2);
-	this.snake.y = Math.floor(gridHeight / 2);
+	this.snake = new Snake(Math.floor(gridWidth / 2), Math.floor(gridHeight / 2));
 	this.gem = new Point();
 	this.currentXP = 0;
 	this.collectedGem = false;
@@ -46,8 +44,9 @@ function SnakeGame(gridWidth, gridHeight, gameMode = GameModes.CLASSIC, wrap = f
 			GRID_HEIGHT = gridHeight;
 		}
 
-this.snake.x = Math.floor(GRID_WIDTH / 2);
+		this.snake.x = Math.floor(GRID_WIDTH / 2);
 		this.snake.y = Math.floor(GRID_HEIGHT / 2);
+
 		// Set game mode and wrap if given
 		if(gameMode != -1) {
 			this.gameMode = gameMode;
@@ -174,7 +173,7 @@ this.snake.x = Math.floor(GRID_WIDTH / 2);
 
 
 	/**
-	* Calculates how much XP a player should get for collection a gem
+	* Calculates how much XP a player should get for collecting a gem
 	*/
 	this.calculateXP = function() {
 		return 0;

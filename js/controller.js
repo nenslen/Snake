@@ -1,8 +1,9 @@
 var PlayerType = Object.freeze({HUMAN: 0, AI: 1});
 var SPRITE_SIZE = 32;
-var GRID_SIZE = 20;
+var GRID_WIDTH = 7;
+var GRID_HEIGHT = 10;
 
-var game = new Phaser.Game(SPRITE_SIZE * GRID_SIZE, SPRITE_SIZE * GRID_SIZE, Phaser.CANVAS, 'sim', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(SPRITE_SIZE * GRID_WIDTH, SPRITE_SIZE * GRID_HEIGHT, Phaser.CANVAS, 'sim', { preload: preload, create: create, update: update });
 
 
 
@@ -19,14 +20,16 @@ var particle;
 var gemBounce;
 
 var updateTime = 0;
-var gameSpeed = 25; // Time between updates (lower = faster)
+var gameSpeed = 50; // Time between updates (lower = faster)
 var gameStarted = false;
-var playerType = PlayerType.AI;
+var playerType = PlayerType.AI; 
 var comboTime = 100;
 var comboTimer = 0;
 var comboFont;
 var comboText;
-var comboEffects = true;
+var comboCameraShake = false;
+var comboParticleEffects = true;
+var comboTextEffect = true;
 
 var spaceKey;
 var upKey;
@@ -41,16 +44,11 @@ var dKey;
 
 
 function preload() {
-    /*
-    game.load.image('head', 'images/iridescent.png');
-    game.load.image('segment', 'images/goldbox.png');
-    game.load.image('gem', 'images/star.png');
-    */
-    game.load.image('head', 'images/head.png');
-    game.load.image('segment', 'images/segment.png');
-    game.load.image('gem', 'images/star.png');
+    game.load.image('head', '/snake/media/red.png');
+    game.load.image('segment', '/snake/media/blue.png');
+    game.load.image('gem', '/snake/media/gold.png');
 
-    game.load.image('knightFont', 'images/KNIGHT3.png');
+    game.load.image('knightFont', '/snake/media/KNIGHT3.png');
 }
 
 
@@ -70,8 +68,47 @@ function create() {
 
     showGameOverMessage();
     game.stage.backgroundColor = "#2d2d2d";
+    game.scale.compatibility.scrollTo = false; // Stop phaser's horrible default auto-scroll to top
 }
 
+
+$(function() {
+    $('#start-button').click(function() {
+        reset();
+        gameStarted = true;
+    });
+
+
+    var rangeSlider = function(){
+        var slider = $('.gameSpeed_slider'),
+        range = $('.gameSpeed_range'),
+        value = $('.gameSpeed_value');
+    
+        slider.each(function(){
+
+            value.each(function(){
+                var value = $(this).prev().attr('value');
+                $(this).html(value + "%");
+            });
+
+            range.on('input', function(){
+                $(this).next(value).html(this.value + "%");
+                let val = parseInt(this.value);
+                
+                gameSpeed = scaleValue(val, 0, 250, 250, 0);
+                console.log('delayTime: ' + gameSpeed);
+            });
+        });
+    };
+
+    const scaleValue = (num, in_min, in_max, out_min, out_max) => {
+        return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+
+    rangeSlider();
+
+
+});
 
 // Update game and graphics
 function update() {
@@ -102,24 +139,30 @@ function update() {
             backLayer.add(newSegment);
             snake.collectedGem = false;
 
-            if(snake.combo > 1 && comboEffects) {
+            if(snake.combo > 0) {
 
                 // Camera shake
-                game.camera.shake(0.005, 200);
+                if (comboCameraShake) {
+                    game.camera.shake(0.005, 200);
+                }
                 
                 // Particles
-                emitter.x = snake.snake.x * SPRITE_SIZE;
-                emitter.y = snake.snake.y * SPRITE_SIZE;
-                emitter.start(true, 500, null, 4);
+                if (comboParticleEffects) {
+                    emitter.x = snake.snake.x * SPRITE_SIZE;
+                    emitter.y = snake.snake.y * SPRITE_SIZE;
+                    emitter.start(true, 500, null, 4);
+                }
                 
                 // Reset combo timer
                 comboTimer = comboTime;
                 
                 // Text
-                /*comboText.x = game.world.centerX;
-                comboText.y = game.world.centerY;
-                comboFont.text = "Combo:" + snake.combo;
-                comboText.tint = 12822094.436339;*/
+                if (comboTextEffect && snake.combo > 1) {
+                    comboText.x = game.world.centerX;
+                    comboText.y = game.world.centerY;
+                    comboFont.text = "Combo:" + snake.combo;
+                    comboText.tint = 12822094.436339;
+                }
             }
         }
 
@@ -220,7 +263,7 @@ function reset() {
     emitter.maxParticleScale = scale;
 
     // Game and player
-    snake = new SnakeGame(GRID_SIZE, GRID_SIZE);
+    snake = new SnakeGame(GRID_WIDTH, GRID_HEIGHT);
     snake.reset();
     segments = [];
 
@@ -254,7 +297,7 @@ function reset() {
 // Displays a game over message
 function showGameOverMessage() {
     var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    var text = game.add.text(0, 0, "Press SPACE to start new game", style);
+    var text = game.add.text(0, 0, "GAME OVER", style);
     text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
-    text.setTextBounds(0, 100, SPRITE_SIZE * GRID_SIZE, 100);
+    text.setTextBounds(0, 100, SPRITE_SIZE * GRID_WIDTH, 100);
 }
